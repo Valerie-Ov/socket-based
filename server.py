@@ -1,4 +1,4 @@
-from os import system
+import os
 from socket import *
 from file_handler import *
 from data_validation import *
@@ -9,9 +9,7 @@ if __name__ == "__main__":
     PORT = 12345  # reserving a port for your service
 
     # open a firewall port
-    system(
-        'netsh advfirewall firewall add rule name="Open Port {0}" dir=in action=allow protocol=TCP localport={1} remoteip={2}'.format(
-            PORT, PORT, HOST))
+    os.system(f"sudo ufw allow {PORT}/tcp")
 
     with socket() as s:
         print('Server started!')
@@ -29,7 +27,7 @@ if __name__ == "__main__":
                 if address_status_check(clients_site)==200:  # if connection to the http/s server succeed
                     print(addr,' >> ',clients_site)
                     parsed_link = urlparse(clients_site)  # take a part of the url without a protocol mention
-                    system("traceroute " + str(parsed_link.netloc) + "> traceroute.log")  # traceroute to the website and write the log to the file
+                    os.system("traceroute " + str(parsed_link.netloc) + "> traceroute.log")  # traceroute to the website and write the log to the file
                     c.send(get_file_contents().encode())
 
             except PermissionError:
