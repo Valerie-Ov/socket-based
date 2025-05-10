@@ -2,6 +2,13 @@ import subprocess
 from urllib.parse import urlparse
 
 def write_logs(url):
+    """
+        Runs a traceroute to the given URL and writes the result to a file.
+
+        Args:
+            url (str): The target URL or domain to trace.
+    """
+
     parsed = urlparse(url)
     log_file = "traceroute.log"
 
