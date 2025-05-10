@@ -14,6 +14,5 @@ sleep 1  # Give server time to start and write .env
 # Simulate client input
 echo -e "https://github.com\nexit" | python3 client.py
 
-sleep 5
 # Kill the server
 kill $SERVER_PID
