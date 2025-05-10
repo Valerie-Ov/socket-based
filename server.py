@@ -2,6 +2,7 @@ import os
 from socket import *
 from file_handler import *
 from data_validation import *
+from write_tracelog import *
 from urllib.parse import urlparse
 
 def handle_port_num(chosen_port):
@@ -32,8 +33,7 @@ if __name__ == "__main__":
                     break
                 if address_status_check(clients_site)==200:  # if connection to the http/s server succeed
                     print(addr,' >> ',clients_site)
-                    parsed_link = urlparse(clients_site)  # take a part of the url without a protocol mention
-                    os.system("traceroute " + str(parsed_link.netloc) + "> traceroute.log")  # traceroute to the website and write the log to the file
+                    write_logs(clients_site)
                     c.send(get_file_contents().encode())
 
             except PermissionError:
