@@ -1,13 +1,25 @@
+import os
+from dotenv import load_dotenv
 from socket import *
 from data_validation import address_validation
 
+def get_port_num():
+    default = 12345
+    try:
+        return int(os.environ.get("SERVICE_PORT", default))
+    except (TypeError, ValueError):
+        print("Invalid SERVICE_PORT in env. Falling back to default.")
+        return default
 
 if __name__ == '__main__':
+    load_dotenv(".env")
     HOST = gethostname()  # get local machine name
-    PORT = 12345  # reserving port for the service
+    PORT = get_port_num()
+
     try:
         with socket() as s:  # creating a socket object
             s.connect((HOST, PORT))  # establishing a new connection to a remote machine
+
             while True:
                client_input = input("CLIENT >> Please check this website: ")
                s.sendall(client_input.encode())  # send url to the server
