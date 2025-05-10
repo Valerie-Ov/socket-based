@@ -2,32 +2,38 @@ import os
 from socket import *
 from file_handler import *
 from data_validation import *
+from write_tracelog import *
 from urllib.parse import urlparse
+
+def handle_port_num(chosen_port):
+    env_path: str = ".env"
+    with open(env_path, "w") as f:
+        f.write(f"SERVICE_PORT={chosen_port}\n")
 
 if __name__ == "__main__":
     HOST = gethostname()  # Get local machine name
-    PORT = 12345  # reserving a port for your service
-
-    # open a firewall port
-    os.system(f"sudo ufw allow {PORT}/tcp")
 
     with socket() as s:
         print('Server started!')
         print('Waiting for clients...')
-        s.bind((HOST, PORT))  # bind to the port
+
+        s.bind((HOST, 0))  # bind to the free port
+        handle_port_num(s.getsockname()[1])
+
         s.listen(5)  # waiting for client connection
         c, addr = s.accept()  # establish connection with client
         print('Connected with', addr)
         while True:
             clients_site = c.recv(1024).decode('UTF-8')  # getting a message from the remote client machine
+            print(f"Received from client: {clients_site}")
+
             try:
                 if clients_site=="exit":
                     c.send("SERVER >> Goodbye!".encode())
                     break
                 if address_status_check(clients_site)==200:  # if connection to the http/s server succeed
                     print(addr,' >> ',clients_site)
-                    parsed_link = urlparse(clients_site)  # take a part of the url without a protocol mention
-                    os.system("traceroute " + str(parsed_link.netloc) + "> traceroute.log")  # traceroute to the website and write the log to the file
+                    write_logs(clients_site)
                     c.send(get_file_contents().encode())
 
             except PermissionError:
