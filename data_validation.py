@@ -35,4 +35,3 @@ def address_status_check(site_address: str)-> property:
     except error.HTTPError:
         raise error.HTTPError("Can't connect to the website")
 
-
